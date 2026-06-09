@@ -49,75 +49,44 @@
 
     <script>
         function carregarClientes(){
-        fetch('/listar-clientes')
-            .then(res => res.json())
-            .then(clientes => {
-                const corpoTabela = document.getElementById('lista-clientes');
-                clientes.forEach(c => {
-                    corpoTabela.innerHTML += `
-                        <tr>
-                            <td>${c.nome}</td>
-                            <td>${c.cpf}</td>
-                            <td>${c.telefone}</td>
-                            <td>
-                                <button onclick="prepararEdicao(${c.id},'${c.nome}','${c.cpf}','${c.telefone}')"
-                                style="width:auto; backgroud:orange; padding:5px 10px; margin-right:5px;">✏</button>
-                                <button onclick="excluirCliente(${c.id})"
-                                style="width:auto;background:red;padding:5px 10px;">🗑</button>
+            fetch('/listar-clientes')
+                .then(res => res.json())
+                .then(clientes => {
+                    const corpoTabela = document.getElementById('lista-clientes');
+                    corpoTabela.innerHTML = ''; // Limpa a tabela antes de carregar
+                    
+                    clientes.forEach(c => {
+                        corpoTabela.innerHTML += `
+                            <tr>
+                                <td>${c.nome}</td>
+                                <td>${c.cpf}</td>
+                                <td>${c.telefone}</td>
+                                <td>
+                                    <button onclick="editarCliente('${c.cpf}')">Editar</button>
+                                    <button onclick="excluirCliente('${c.cpf}')" style="background-color: #ff4d4d; color: white;">Excluir</button>
                                 </td>
-                        </tr>`;
-                });
-            });
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(err => console.error("Erro ao carregar clientes:", err));
         }
 
-        //lógica para salvar (Novo ou Edição) | Acrescentar tudo
-        document.getElementById('form-client').onsubmit=function(e){
-            e.preventDefault();
-            const id=this.dataset.id;//Verifica se há um ID guardado para edição
-            const dados={
-                nome:this.nome.value,
-                cpf:this.cpf.value,
-                telefone:this.telefone.value
-            };
-            const url=id?`/alterar-cliente/${id}`:'/salvar-cliente';
-            const metodo=id?'PUT':'POST';
-
-            fetch(url,{
-                method:metodo,
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify(dados)
-            }).then(()=>{
-                alert(id?"Cliente alterado!":"Cliente salvo!");
-                location.reload(); 
-            });
+        // Funções auxiliares para as ações (Exemplos lógicos)
+        function editarCliente(id) {
+            console.log("Editar cliente com identificador:", id);
+            // Implemente a lógica de edição aqui
         }
-        //Função para Excluir | Acrescentar tudo
-        function excluirCliente(id){
-            if(confirm("Deseja excluir este cliente?")){
-                fetch(`/excluir-cliente/${id}`,{method:'DELETE'})
-                .then(()=>carregarClientes());
+
+        function excluirCliente(id) {
+            if(confirm("Deseja realmente excluir este cliente?")) {
+                console.log("Excluir cliente com identificador:", id);
+                // Implemente o fetch DELETE ou POST para exclusão aqui
             }
         }
-        //Função para colocar dados no form para Editar | Acrescentar tudo
-function prepararEdicao(id,nome,cpf,telefone){
-    const form=document.getElementById('form-cliente');
-    form.dataset.id; // Guarda o ID no formulário
-    form.nome.value=nome;
-    form.cpf.value=telefone;
 
-    document.getElementById('titulo-form').innerText="Editar Cadastro";
-    const btn=document.getElementById('btn-salvar');
-    btn.innerText="Confirmar Alteração";
-    btn.style.background="orange";
-}
-carregarClientes();
-    
+        // Executa a função automaticamente ao abrir a página
+        window.onload = carregarClientes;
     </script>
 </body>
-<footer class="rodape">
-    <div class="container-rodape">
-        <p>&copy; 2026 SisSenai - Sistema de Gestão Educacional</p>
-        <p>Desenvolvido para fins didáticos - Unidade SENAI Capanema/PR</p>
-    </div>
-</footer>
 </html>
