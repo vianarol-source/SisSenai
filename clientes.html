@@ -84,9 +84,21 @@
                 // Implemente o fetch DELETE ou POST para exclusão aqui
             }
         }
+// Função para colocar dados no form para Editar | Acrescentar tudo
+		function prepararEdicao(id,nome,cpf,telefone){
+			const form=document.getElementByld('form-cliente');
+			form.dataset.id=id;//Guarda o ID no formulário
+			form.nome.value=nome;
+			form.cpf.value=cpf;
+			form.telefone.value=telefone;
 
-        // Executa a função automaticamente ao abrir a página
-        window.onload = carregarClientes;
-    </script>
-</body>
-</html>
+			document.getElementByld('titulo-form').innerText="Editar Cadastro";
+			const btn = document.getElementByld('btn-salvar');
+			btn.innerText="Confirmar Alteração";
+			btn.style.background="orange";
+		}
+		carregarClientes();
+	</script>
+	
+
+		
